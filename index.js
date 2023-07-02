@@ -1,5 +1,6 @@
-// A playing card representation; value of a card.
-// Card values are 1 to 13 and aces are considered the highest value of 13.
+// A playing card representation.
+// Card values are 1 to 13.
+// Aces are considered the highest value of 13.
 class Card {
   constructor(value) {
     // Only accept numbers in the range of valid card values.
@@ -28,6 +29,8 @@ class Deck {
   // Remove a card from the deck and return it.
   getCard() {
     const cardIndex = Math.random() * this.cards.length;
+    // Splice returns an array of removed items. We're only removing one item so
+    // get the first (0th) item (Card) from the returned array and return it.
     return this.cards.splice(cardIndex, 1)[0];
   }
 
@@ -40,78 +43,89 @@ class Deck {
   }
 }
 
-// A player of the game has a card hand and a score.
+// A player of the game has a card stack and a score.
 class Player {
   constructor() {
-    this.hand = [];
+    this.stack = [];
     this.score = 0;
   }
 
-  // Build up the hand by adding cards to it one at a time.
+  // Build up the stack by adding cards to it one at a time.
   addCard(card) {
-    this.hand.push(card);
+    this.stack.push(card);
   }
 
-  // Remove a card from the end of the hand (array) and return it to be played.
+  // Remove a card from the top of the stack (array) and return it to be played.
   playCard() {
-    return this.hand.pop();
+    return this.stack.pop();
   }
 
-  // Increment the score by won because the player won a round.
-  winHand() {
+  // Increment the score by one because the player won a round.
+  winRound() {
     this.score++;
   }
 }
 
-// Set up a new game, dealing out all the cards to the two players.
-const deck = new Deck();
-const player1 = new Player();
-const player2 = new Player();
-deck.deal(player1, player2);
+// Deal out all the cards to the two players.
+const dealCards = (player1, player2) => {
+  const deck = new Deck();
+  deck.deal(player1, player2);
+};
 
-// Keep track of the number of hands played.
-let hand = 1;
-
-// Only need to be concerned about the length of one hand because they'll both
-// be playing a card each turn.
-while (player1.hand.length > 0) {
-  // Each player plays a card.
+// Each player plays a card.
+const playRound = (player1, player2) => {
   const card1 = player1.playCard();
   const card2 = player2.playCard();
   let message = '';
 
-  // Determine the winner of the hand, or whether there was a tie.
+  // Determine the winner of the round, or whether there was a tie.
   if (card1.value > card2.value) {
-    player1.winHand();
+    player1.winRound();
     message = 'Player1 Wins!';
   } else if (card1.value < card2.value) {
-    player2.winHand();
+    player2.winRound();
     message = 'Player2 Wins!';
   } else {
     message = 'We have a tie!';
   }
 
   // Output the results of the hand just played.
-  console.log(`Hand: ${hand}`);
-  console.log(`\tPlayer1: ${card1.value}`);
-  console.log(`\tPlayer2: ${card2.value}`);
-  console.log(`\t\t`, message);
-
-  // Move to the next hand.
-  hand++;
-}
+  console.log(`Player1: ${card1.value}`);
+  console.log(`Player2: ${card2.value}`);
+  console.log(`\t`, message);
+};
 
 // Determine the winner and output the results.
-console.log('---------- Game Results ----------');
+const getWinner = (score1, score2) => {
+  let message = '';
+  console.log('---------- Game Results ----------');
 
-console.log(`Player1 scored: ${player1.score}`);
-console.log(`Player2 scored: ${player2.score}`);
+  // Output the winner or whether there was a tie.
+  if (score1 > score2) {
+    message = 'Player1 wins!';
+  } else if (score1 < score2) {
+    message = 'Player2 wins!';
+  } else {
+    message = 'We have a tie!';
+  }
 
-// Output the winner or whether there was a tie.
-if (player1.score > player2.score) {
-  console.log('Player1 wins!');
-} else if (player1.score < player2.score) {
-  console.log('Player2 wins!');
-} else {
-  console.log('We have a tie!');
+  console.log(`\tPlayer1 scored: ${score1}`);
+  console.log(`\tPlayer2 scored: ${score2}`);
+  return message;
+};
+
+// Run the game
+const player1 = new Player();
+const player2 = new Player();
+
+// Deal the cards to the players
+dealCards(player1, player2);
+
+// Only need to be concerned about the length of one stack because they'll both
+// be playing a card each turn.
+while (player1.stack.length > 0) {
+  playRound(player1, player2);
 }
+
+const winner = getWinner(player1.score, player2.score);
+console.log(winner);
