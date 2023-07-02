@@ -25,3 +25,4 @@ Two players and one deck of cards. The cards are dealt so each player has 26 car
 The plays are logged to the console showing who won each round. At the end, the final scores are displayed and the winner is determined and shown.
 
 ## Screenshot(s)
+<img width="1253" alt="Screen Shot 2023-07-02 at 1 29 20 PM" src="https://github.com/terryroe/game-of-war/assets/59881/d6503048-a74b-4ca0-bdf1-b8214480187e">
